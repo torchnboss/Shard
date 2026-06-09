@@ -1,0 +1,27 @@
+﻿@using Shard.Data
+@inject GlobalData Data;
+@inject NavigationManager Manager;
+
+<MudNavMenu>
+    <MudSelect T="string"
+               Value="Data.ActiveShard"
+               ValueChanged="ActiveShardChanged"
+               Variant="Variant.Outlined"
+               Label="Активный Shard">
+        @foreach (var shard in Data.GetShards())
+        {
+            <MudSelectItem Value="shard">@shard</MudSelectItem>
+        }
+    </MudSelect>
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Дашборд</MudNavLink>
+    <MudNavLink Href="Pictures" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Image">Картинки</MudNavLink>
+</MudNavMenu>
+
+@code
+{
+    void ActiveShardChanged(string shard)
+    {
+        Data.ActiveShard = shard;
+        Manager.Refresh();
+    }
+}

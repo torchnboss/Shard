@@ -1,0 +1,29 @@
+﻿@using Shard.Data
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Image" Class="mr-3 mb-n1"/>
+            Картинка @Pic.Name
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudImage Fluid="true" Src="@Pic.GetWebPath()"/>
+        <MudTextField Variant="Variant.Outlined" @bind-Value="Pic.Caption" Label="Подпись"/>
+        <MudSwitch @bind-Value="Pic.IsSpoiler" Label="Спойлер" Color="Color.Info" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Class="mb-4" Color="Color.Primary" Variant="Variant.Filled" @onclick="SavePic">Сохранить</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public MediaFile Pic { get; set; } = null!;
+
+    private void SavePic()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

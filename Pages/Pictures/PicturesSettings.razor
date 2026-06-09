@@ -1,0 +1,71 @@
+﻿@page "/Pictures/Settings"
+@using Shard.Data
+@inject GlobalData Data;
+@inject FolderService FolderService;
+@inject FileService FileService;
+
+<PageTitle>Настройки Картинок</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Настройки Картинок</MudText>
+@if (Data.ActiveShard != null)
+{
+    <MudText Typo="Typo.h6" GutterBottom="true">Синхронизация</MudText>
+    <MudButton @onclick="DoSync" Color="Color.Primary" Variant="Variant.Filled">Синхронизировать</MudButton> @_synced
+
+    <MudText Typo="Typo.h6" Class="mt-8" GutterBottom="true">Пути к файлам</MudText>
+
+    @foreach (var folder in _folders)
+    {
+        <MudText Class="mb-8">
+            <MudChip T="string" Color="Color.Primary">@folder.Name</MudChip> @folder.Path
+            <MudIconButton @onclick="() => DeleteFolder(folder)" Icon="@Icons.Material.Filled.Delete"
+                           aria-label="delete"/>
+        </MudText>
+    }
+
+    <MudTextField Style="width: 100%" @bind-Value="_newFolder" T="string" Variant="Variant.Outlined"
+                  Label="Путь к папке с картинками"></MudTextField>
+    <br/>
+    <MudButton @onclick="AddFolder" Color="Color.Primary" Variant="Variant.Filled">Добавить</MudButton>
+}
+else
+{
+    <MudText Class="mb-8">Для начала работы выберите Shard файл</MudText>
+}
+
+@code {
+
+    private string _newFolder = "";
+    private string _synced = "";
+
+    private List<Folder> _folders = [];
+
+    protected override void OnInitialized()
+    {
+        _folders = FolderService.GetFolders(FolderType.Pictures);
+    }
+
+    private void DeleteFolder(Folder folder)
+    {
+        FolderService.DeleteFolder(folder.Id);
+        _folders.Remove(folder);
+    }
+
+    private void DoSync()
+    {
+        _synced = "";
+        var count = FileService.SyncFiles(FolderType.Pictures);
+        _synced = $" Добавленно {count} новых файлов";
+    }
+
+    private void AddFolder()
+    {
+        if (string.IsNullOrEmpty(_newFolder)) return;
+
+        var folder = FolderService.AddFolder(_newFolder, FolderType.Pictures);
+        if (folder == null) return;
+        _folders.Add(folder);
+        _newFolder = "";
+    }
+
+}

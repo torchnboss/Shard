@@ -1,0 +1,36 @@
+﻿@using Shard.Data
+
+@inject IDialogService DialogService;
+@inject FileService FileService;
+
+<MudCard>
+    <MudCardMedia Image="@Pic.GetWebPath()" Height="200"/>
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@Pic.Name</MudText>
+        <MudText Typo="Typo.body2">@Pic.Caption</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Target="_blank" Href="@Pic.GetWebPath()" Variant="Variant.Text" Color="Color.Primary">Открыть</MudButton>
+        <MudButton @onclick="EditPic" Variant="Variant.Text" Color="Color.Primary">Редактировать</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+    [Parameter] public MediaFile Pic { get; set; } = null!;
+
+    private async Task EditPic()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Pic", Pic);
+
+        var dialog = DialogService.Show<EditPictureDialog>("Картинка", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            FileService.SaveFile(Pic);
+        }
+        
+    }
+}

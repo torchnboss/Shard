@@ -1,0 +1,58 @@
+﻿@page "/Pictures"
+@using Shard.Data
+@using Shard.Components.Pictures
+@inject GlobalData Data;
+@inject FileService FileService;
+@inject NavigationManager Manager;
+
+<PageTitle>Мои Картинки</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Мои Картинки <MudIconButton @onclick="GoSettings" Icon="@Icons.Material.Filled.Settings"
+                                                                        aria-label="settings"/></MudText>
+@if (Data.ActiveShard != null)
+{
+    <MudTextField Style="width: 100%" @bind-Value="_search" T="string" Variant="Variant.Outlined"
+                  Label="Поиск по картинкам"></MudTextField>
+    <br/>
+    <MudGrid Spacing="2" Justify="Justify.Center">
+        @foreach (var file in FilteredFiles)
+        {
+            <MudItem>
+                <PictureCard Pic="file"/>
+            </MudItem>
+        }
+    </MudGrid>
+}
+else
+{
+    <MudText Class="mb-8">Для начала работы выберите Shard файл</MudText>
+}
+
+@code {
+
+    private string _search = "";
+    private List<MediaFile> _pictures = [];
+    
+    
+    private IEnumerable<MediaFile> FilteredFiles =>
+        _pictures
+            .Where(x =>
+            {
+                if (string.IsNullOrEmpty(_search)) return true;
+                var search = _search.ToLower();
+                if (!string.IsNullOrEmpty(x.Caption) && x.Caption.ToLower().Contains(search))
+                    return true;
+                return x.Name.ToLower().Contains(search);
+            });
+
+    private void GoSettings()
+    {
+        Manager.NavigateTo("Pictures/Settings");
+    }
+
+    protected override void OnInitialized()
+    {
+        _pictures = FileService.GetFiles(FolderType.Pictures);
+    }
+
+}
