@@ -4,7 +4,7 @@
 @inject FileService FileService;
 
 <MudCard>
-    <MudCardMedia Image="@Pic.GetWebPath()" Height="200"/>
+    <MudCardMedia Class="@Spoiler" Image="@Pic.GetWebPath()" Height="200"/>
     <MudCardContent>
         <MudText Typo="Typo.h5">@Pic.Name</MudText>
         <MudText Typo="Typo.body2">@Pic.Caption</MudText>
@@ -15,9 +15,17 @@
     </MudCardActions>
 </MudCard>
 
+<style>
+    .spoiler {
+        filter: blur(1.5rem);
+    }
+</style>
+
 @code {
 
     [Parameter] public MediaFile Pic { get; set; } = null!;
+
+    private string Spoiler => Pic.IsSpoiler ? "spoiler" : "";
 
     private async Task EditPic()
     {

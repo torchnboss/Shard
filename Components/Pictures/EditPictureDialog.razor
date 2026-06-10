@@ -9,8 +9,8 @@
     </TitleContent>
     <DialogContent>
         <MudImage Fluid="true" Src="@Pic.GetWebPath()"/>
-        <MudTextField Variant="Variant.Outlined" @bind-Value="Pic.Caption" Label="Подпись"/>
-        <MudSwitch @bind-Value="Pic.IsSpoiler" Label="Спойлер" Color="Color.Info" />
+        <MudTextField Variant="Variant.Outlined" @bind-Value="_caption" Label="Подпись"/>
+        <MudSwitch T="bool" @bind-Checked="_isSpoiler" Label="Спойлер" Color="Color.Info" />
     </DialogContent>
     <DialogActions>
         <MudButton Class="mb-4" Color="Color.Primary" Variant="Variant.Filled" @onclick="SavePic">Сохранить</MudButton>
@@ -22,8 +22,19 @@
 
     [Parameter] public MediaFile Pic { get; set; } = null!;
 
+    private bool _isSpoiler;
+    private string? _caption;
+    
+    protected override void OnInitialized()
+    {
+        _caption = Pic.Caption;
+        _isSpoiler = Pic.IsSpoiler;
+    }
+    
     private void SavePic()
     {
+        Pic.IsSpoiler = _isSpoiler;
+        Pic.Caption = _caption;
         MudDialog.Close(DialogResult.Ok(true));
     }
 }
