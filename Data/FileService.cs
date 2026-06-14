@@ -2,7 +2,7 @@
 
 namespace Shard.Data;
 
-public class FileService(GlobalData data)
+public class FileService(GlobalData data, IConfiguration configuration)
 {
     public List<MediaFile> GetFiles(FolderType folderType)
     {
@@ -58,6 +58,16 @@ public class FileService(GlobalData data)
                 if (real.Exists(x => x.Path == file.Path)) continue;
                 file.Type = folderType;
                 filesCol.Insert(file);
+                if (folderType == FolderType.Videos)
+                {
+                    var contentRoot = configuration.GetValue<string>("Storage");
+                    var filePath = $"{contentRoot}\\Thumbnails\\{file.Id}.png";
+                    if (!File.Exists(filePath))
+                    {
+                        var ffMpeg = new NReco.VideoConverter.FFMpegConverter();
+                        ffMpeg.GetVideoThumbnail(file.Path, filePath);
+                    }
+                }
                 counter++;
             }
         }

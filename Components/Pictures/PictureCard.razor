@@ -4,13 +4,13 @@
 @inject FileService FileService;
 
 <MudCard>
-    <MudCardMedia Class="@Spoiler" Image="@Pic.GetWebPath()" Height="200"/>
+    <MudCardMedia Class="@Spoiler" Image="@Pic.GetImagePath()" Height="200"/>
     <MudCardContent>
         <MudText Typo="Typo.h5">@Pic.Name</MudText>
         <MudText Typo="Typo.body2">@Pic.Caption</MudText>
     </MudCardContent>
     <MudCardActions>
-        <MudButton Target="_blank" Href="@Pic.GetWebPath()" Variant="Variant.Text" Color="Color.Primary">Открыть</MudButton>
+        <MudButton Target="_blank" Href="@Pic.GetImagePath()" Variant="Variant.Text" Color="Color.Primary">Открыть</MudButton>
         <MudButton @onclick="EditPic" Variant="Variant.Text" Color="Color.Primary">Редактировать</MudButton>
     </MudCardActions>
 </MudCard>

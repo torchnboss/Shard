@@ -1,18 +1,18 @@
-﻿@page "/Pictures"
+﻿@page "/Videos"
 @using Shard.Data
-@using Shard.Components.Pictures
+@using Shard.Components.Videos
 @inject GlobalData Data;
 @inject FileService FileService;
 @inject NavigationManager Manager;
 
-<PageTitle>Мои Картинки</PageTitle>
+<PageTitle>Мои Видосы</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Мои Картинки <MudIconButton @onclick="GoSettings" Icon="@Icons.Material.Filled.Settings"
+<MudText Typo="Typo.h3" GutterBottom="true">Мои Видосы <MudIconButton @onclick="GoSettings" Icon="@Icons.Material.Filled.Settings"
                                                                         aria-label="settings"/></MudText>
 @if (Data.ActiveShard != null)
 {
     <MudTextField Style="width: 100%" @bind-Value="_search" T="string" Variant="Variant.Outlined"
-                  Label="Поиск по картинкам"></MudTextField>
+                  Label="Поиск по видосам"></MudTextField>
     <br/>
     <MudSwitch T="bool" @bind-Checked="_captionOnly" Label="Только с подписью" Color="Color.Primary" />
     <br/>
@@ -21,7 +21,7 @@
         @foreach (var file in FilteredFiles)
         {
             <MudItem>
-                <PictureCard Pic="file"/>
+                <VideoCard Vid="file"/>
             </MudItem>
         }
     </MudGrid>
@@ -35,11 +35,11 @@ else
 
     private bool _captionOnly;
     private string _search = "";
-    private List<MediaFile> _pictures = [];
+    private List<MediaFile> _videos = [];
     
     
     private IEnumerable<MediaFile> FilteredFiles =>
-        _pictures
+        _videos
             .Where(x =>
             {
                 if (_captionOnly && string.IsNullOrEmpty(x.Caption)) return false;
@@ -52,12 +52,12 @@ else
 
     private void GoSettings()
     {
-        Manager.NavigateTo("Pictures/Settings");
+        Manager.NavigateTo("Videos/Settings");
     }
 
     protected override void OnInitialized()
     {
-        _pictures = FileService.GetFiles(FolderType.Pictures);
+        _videos = FileService.GetFiles(FolderType.Videos);
     }
 
 }

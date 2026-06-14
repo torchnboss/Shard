@@ -3,12 +3,12 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@Icons.Material.Filled.Image" Class="mr-3 mb-n1"/>
-            Картинка @Pic.Name
+            <MudIcon Icon="@Icons.Material.Filled.Videocam" Class="mr-3 mb-n1"/>
+            Видос @Vid.Name
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudImage Fluid="true" Src="@Pic.GetImagePath()"/>
+        <iframe style="width: 1280px; height: 720px; margin-left: -320px" src="@Vid.GetVideoPath()"></iframe>
         <MudTextField Variant="Variant.Outlined" @bind-Value="_caption" Label="Подпись"/>
         <MudSwitch T="bool" @bind-Checked="_isSpoiler" Label="Спойлер" Color="Color.Info" />
     </DialogContent>
@@ -20,21 +20,21 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
 
-    [Parameter] public MediaFile Pic { get; set; } = null!;
+    [Parameter] public MediaFile Vid { get; set; } = null!;
 
     private bool _isSpoiler;
     private string? _caption;
     
     protected override void OnInitialized()
     {
-        _caption = Pic.Caption;
-        _isSpoiler = Pic.IsSpoiler;
+        _caption = Vid.Caption;
+        _isSpoiler = Vid.IsSpoiler;
     }
     
     private void SavePic()
     {
-        Pic.IsSpoiler = _isSpoiler;
-        Pic.Caption = _caption;
+        Vid.IsSpoiler = _isSpoiler;
+        Vid.Caption = _caption;
         MudDialog.Close(DialogResult.Ok(true));
     }
 }

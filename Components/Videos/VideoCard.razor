@@ -1,0 +1,44 @@
+﻿@using Shard.Data
+
+@inject IDialogService DialogService;
+@inject FileService FileService;
+
+<MudCard>
+    <MudCardMedia Class="@Spoiler" Image="@Vid.GetThumbnailPath()" Height="200"/>
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@Vid.Name</MudText>
+        <MudText Typo="Typo.body2">@Vid.Caption</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Target="_blank" Href="@Vid.GetVideoPath()" Variant="Variant.Text" Color="Color.Primary">Открыть</MudButton>
+        <MudButton @onclick="EditVid" Variant="Variant.Text" Color="Color.Primary">Редактировать</MudButton>
+    </MudCardActions>
+</MudCard>
+
+<style>
+    .spoiler {
+        filter: blur(1.5rem);
+    }
+</style>
+
+@code {
+
+    [Parameter] public MediaFile Vid { get; set; } = null!;
+
+    private string Spoiler => Vid.IsSpoiler ? "spoiler" : "";
+
+    private async Task EditVid()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Vid", Vid);
+
+        var dialog = DialogService.Show<EditVideoDialog>("Видос", parameters);
+        var result = await dialog.Result;
+        
+        if (!result.Cancelled)
+        {
+            FileService.SaveFile(Vid);
+        }
+        
+    }
+}

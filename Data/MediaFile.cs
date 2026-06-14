@@ -13,7 +13,9 @@ public class MediaFile
     public long Size { get; set; }
     public bool IsSpoiler { get; set; }
 
-    public string GetWebPath() => $"/api/media/image?path={Uri.EscapeDataString(Path)}";
+    public string GetImagePath() => $"/api/media/image?path={Uri.EscapeDataString(Path)}";
+    public string GetVideoPath() => $"/api/media/video?path={Uri.EscapeDataString(Path)}";
+    public string GetThumbnailPath() => $"/api/media/thumbnail?fileId={Id}";
     
     public static MediaFile FromPath(string path)
     {
