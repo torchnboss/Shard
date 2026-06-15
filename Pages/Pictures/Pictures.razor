@@ -47,7 +47,7 @@ else
                 var search = _search.ToLower();
                 if (!string.IsNullOrEmpty(x.Caption) && x.Caption.ToLower().Contains(search))
                     return true;
-                return x.Name.ToLower().Contains(search);
+                return x.Path.ToLower().Contains(search);
             });
 
     private void GoSettings()
