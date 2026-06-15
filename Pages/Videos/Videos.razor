@@ -3,18 +3,28 @@
 @using Shard.Components.Videos
 @inject GlobalData Data;
 @inject FileService FileService;
+@inject FolderService FolderService;
 @inject NavigationManager Manager;
 
 <PageTitle>Мои Видосы</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Мои Видосы <MudIconButton @onclick="GoSettings" Icon="@Icons.Material.Filled.Settings"
-                                                                        aria-label="settings"/></MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">Мои Видосы
+    <MudIconButton @onclick="GoSettings" Icon="@Icons.Material.Filled.Settings"
+                   aria-label="settings"/>
+</MudText>
 @if (Data.ActiveShard != null)
 {
     <MudTextField Style="width: 100%" @bind-Value="_search" T="string" Variant="Variant.Outlined"
                   Label="Поиск по видосам"></MudTextField>
     <br/>
-    <MudSwitch T="bool" @bind-Checked="_captionOnly" Label="Только с подписью" Color="Color.Primary" />
+    @foreach (var folder in _folders)
+    {
+        <MudChip T="string" @onclick="() => _search = folder.Path" Color="Color.Primary">@folder.Name</MudChip>
+    }
+
+    <br/>
+    <br/>
+    <MudSwitch T="bool" @bind-Checked="_captionOnly" Label="Только с подписью" Color="Color.Primary"/>
     <br/>
     <br/>
     <MudGrid Spacing="2" Justify="Justify.Center">
@@ -36,8 +46,8 @@ else
     private bool _captionOnly;
     private string _search = "";
     private List<MediaFile> _videos = [];
-    
-    
+    private List<Folder> _folders = [];
+
     private IEnumerable<MediaFile> FilteredFiles =>
         _videos
             .Where(x =>
@@ -58,6 +68,7 @@ else
     protected override void OnInitialized()
     {
         _videos = FileService.GetFiles(FolderType.Videos);
+        _folders = FolderService.GetFolders(FolderType.Videos);
     }
 
 }

@@ -3,6 +3,7 @@
 @using Shard.Components.Pictures
 @inject GlobalData Data;
 @inject FileService FileService;
+@inject FolderService FolderService;
 @inject NavigationManager Manager;
 
 <PageTitle>Мои Картинки</PageTitle>
@@ -13,6 +14,13 @@
 {
     <MudTextField Style="width: 100%" @bind-Value="_search" T="string" Variant="Variant.Outlined"
                   Label="Поиск по картинкам"></MudTextField>
+    <br/>
+    @foreach (var folder in _folders)
+    {
+        <MudChip T="string" @onclick="() => _search = folder.Path" Color="Color.Primary">@folder.Name</MudChip>
+    }
+
+    <br/>
     <br/>
     <MudSwitch T="bool" @bind-Checked="_captionOnly" Label="Только с подписью" Color="Color.Primary" />
     <br/>
@@ -36,7 +44,7 @@ else
     private bool _captionOnly;
     private string _search = "";
     private List<MediaFile> _pictures = [];
-    
+    private List<Folder> _folders = [];
     
     private IEnumerable<MediaFile> FilteredFiles =>
         _pictures
@@ -58,6 +66,7 @@ else
     protected override void OnInitialized()
     {
         _pictures = FileService.GetFiles(FolderType.Pictures);
+        _folders = FolderService.GetFolders(FolderType.Pictures);
     }
 
 }
