@@ -4,6 +4,7 @@
 @inject GlobalData Data;
 @inject IDialogService DialogService;
 @inject NavigationManager Manager;
+@inject FileService FileService;
 
 <PageTitle>Shards</PageTitle>
 
@@ -21,8 +22,25 @@ else
 
 <MudButton @onclick="CreateShard" Color="Color.Primary" Variant="Variant.Filled" DropShadow="false">Создать новый
 </MudButton>
+<br/>
+<br/>
+<MudText Typo="Typo.h6" GutterBottom="true">Файлов в медиатке</MudText>
+<MudGrid Spacing="2" Justify="Justify.FlexStart">
+    @foreach (var score in _scores)
+    {
+        <MudItem>
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">@score.Key</MudText>
+                    <MudText Typo="Typo.body2">@score.Value</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
 
 @code {
+    private List<KeyValuePair<string, int>> _scores = [];
 
     private async Task CreateShard()
     {
@@ -34,6 +52,11 @@ else
             Data.CreateShard(result.Data.ToString()!);
             Manager.Refresh();
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        _scores = FileService.GetScores();
     }
 
 }

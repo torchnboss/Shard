@@ -4,6 +4,18 @@ namespace Shard.Data;
 
 public class FileService(GlobalData data, IConfiguration configuration)
 {
+    public List<KeyValuePair<string, int>> GetScores()
+    {
+        if (data.ActivePath == null) return [];
+
+        using var db = new LiteDatabase(data.ActivePath);
+        var col = db.GetCollection<MediaFile>("files");
+        var pics = col.Query().Where(x => x.Type == FolderType.Pictures).Count();
+        var vids = col.Query().Where(x => x.Type == FolderType.Videos).Count();
+        
+        return [new KeyValuePair<string, int>("Картинки", pics), new KeyValuePair<string, int>("Видосы", vids)];
+    }
+    
     public List<MediaFile> GetFiles(FolderType folderType)
     {
         if (data.ActivePath == null) return [];
