@@ -53,7 +53,7 @@ else
 
     private void DoSync()
     {
-        _synced = "";
+        _synced = "Идёт синхронизация";
         var count = FileService.SyncFiles(FolderType.Videos);
         _synced = $" Добавленно {count} новых файлов";
     }
