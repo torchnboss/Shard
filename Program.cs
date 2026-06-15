@@ -16,6 +16,11 @@ builder.Services.AddTransient<FolderService>();
 builder.Services.AddTransient<FileService>();
 builder.Services.AddMudServices();
 
+var storage = builder.Configuration.GetValue<string>("Storage");
+Directory.CreateDirectory(storage + "\\Shards");
+Directory.CreateDirectory(storage + "\\Thumbnails");
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
