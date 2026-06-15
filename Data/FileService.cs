@@ -12,10 +12,10 @@ public class FileService(GlobalData data, IConfiguration configuration)
         var col = db.GetCollection<MediaFile>("files");
         var pics = col.Query().Where(x => x.Type == FolderType.Pictures).Count();
         var vids = col.Query().Where(x => x.Type == FolderType.Videos).Count();
-        
+
         return [new KeyValuePair<string, int>("Картинки", pics), new KeyValuePair<string, int>("Видосы", vids)];
     }
-    
+
     public List<MediaFile> GetFiles(FolderType folderType)
     {
         if (data.ActivePath == null) return [];
@@ -80,9 +80,11 @@ public class FileService(GlobalData data, IConfiguration configuration)
                         ffMpeg.GetVideoThumbnail(file.Path, filePath);
                     }
                 }
+
                 counter++;
             }
         }
+
         return counter;
     }
 

@@ -6,8 +6,8 @@ public class FolderService(GlobalData data)
 {
     public List<Folder> GetFolders(FolderType folderType)
     {
-        if(data.ActivePath == null) return [];
-        
+        if (data.ActivePath == null) return [];
+
         using var db = new LiteDatabase(data.ActivePath);
         var col = db.GetCollection<Folder>("folders");
 
@@ -23,8 +23,8 @@ public class FolderService(GlobalData data)
 
     public Folder? AddFolder(string path, FolderType folderType)
     {
-        if(data.ActivePath == null) return null;
-        
+        if (data.ActivePath == null) return null;
+
         using var db = new LiteDatabase(data.ActivePath);
         var col = db.GetCollection<Folder>("folders");
         var real = col.Query().Where(x => x.Path == path && x.Type == folderType).FirstOrDefault();
@@ -33,7 +33,7 @@ public class FolderService(GlobalData data)
         {
             Id = Guid.NewGuid(),
             Path = path,
-            Name = path.Split(new [] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last(),
+            Name = path.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last(),
             Type = folderType
         };
 
@@ -44,8 +44,8 @@ public class FolderService(GlobalData data)
 
     public void DeleteFolder(Guid folderId)
     {
-        if(data.ActivePath == null) return;
-        
+        if (data.ActivePath == null) return;
+
         using var db = new LiteDatabase(data.ActivePath);
         var col = db.GetCollection<Folder>("folders");
         col.Delete(folderId);

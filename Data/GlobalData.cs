@@ -4,7 +4,9 @@ public class GlobalData(IConfiguration configuration)
 {
     public string? ActiveShard { get; set; }
 
-    public string? ActivePath => ActiveShard == null ? null : configuration.GetValue<string>("Storage") + $"\\Shards\\{ActiveShard}.db";
+    public string? ActivePath => ActiveShard == null
+        ? null
+        : configuration.GetValue<string>("Storage") + $"\\Shards\\{ActiveShard}.db";
 
     public List<string> GetShards()
     {
@@ -18,7 +20,7 @@ public class GlobalData(IConfiguration configuration)
     public void CreateShard(string name)
     {
         if (ActivePath == null) return;
-        
+
         ActiveShard = name;
         File.Create(ActivePath).Close();
     }

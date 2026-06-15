@@ -16,13 +16,13 @@ public class MediaFile
     public string GetImagePath() => $"/api/media/image?path={Uri.EscapeDataString(Path)}";
     public string GetVideoPath() => $"/api/media/video?path={Uri.EscapeDataString(Path)}";
     public string GetThumbnailPath() => $"/api/media/thumbnail?fileId={Id}";
-    
+
     public static MediaFile FromPath(string path)
     {
         var file = new FileInfo(path);
         return new MediaFile
         {
-            Id =  Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Name = file.Name,
             Path = file.FullName,
             Created = file.CreationTimeUtc,
