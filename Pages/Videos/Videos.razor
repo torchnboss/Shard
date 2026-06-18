@@ -54,10 +54,12 @@ else
             {
                 if (_captionOnly && string.IsNullOrEmpty(x.Caption)) return false;
                 if (string.IsNullOrEmpty(_search)) return true;
+                if (_search.Contains("\\"))
+                    return Path.GetDirectoryName(x.Path) == _search;
                 var search = _search.ToLower();
                 if (!string.IsNullOrEmpty(x.Caption) && x.Caption.ToLower().Contains(search))
                     return true;
-                return x.Path.ToLower().Contains(search);
+                return x.Name.ToLower().Contains(search);
             });
 
     private void GoSettings()
