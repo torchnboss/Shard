@@ -14,7 +14,7 @@
 </MudText>
 @if (Data.ActiveShard != null)
 {
-    <MudTextField Style="width: 100%" @bind-Value="_search" T="string" Variant="Variant.Outlined"
+    <MudTextField Clearable="true" Style="width: 100%" @bind-Value="_search" T="string" Variant="Variant.Outlined"
                   Label="Поиск по видосам"></MudTextField>
     <br/>
     @foreach (var folder in _folders)
