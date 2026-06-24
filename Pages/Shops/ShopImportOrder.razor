@@ -38,6 +38,7 @@
     <br/>
     <br/>
     <MudButton @onclick="DoImport" Color="Color.Primary" Variant="Variant.Filled">Импортировать</MudButton>
+    @(" ")  @_status
 }
 else
 {
@@ -59,9 +60,11 @@ else
     private string? _shopName;
     private string? _content;
     private List<Shop> _shops = [];
+    private string? _status;
 
     private void HandleOnChange(ChangeEventArgs args)
     {
+        _status = null;
         _content = args.Value?.ToString();
     }
 
@@ -75,6 +78,7 @@ else
         if (shop == null) return;
 
         _importer.Import(_content, shop, ShopService.UpsertShopItem, ShopService.InsertOrder, ShopService.InsertOrderItem);
+        _status = "Импорт завершён";
     }
 
     void ImporterChanged(IShopImporter importer)
