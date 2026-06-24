@@ -1,0 +1,94 @@
+﻿@page "/Shop/Import"
+@using Shard.Data
+@inject GlobalData Data;
+@inject ShopService ShopService;
+
+<PageTitle>Импортировать заказ</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Импортировать заказ
+</MudText>
+@if (Data.ActiveShard != null)
+{
+    <MudSelect T="IShopImporter"
+               Value="_importer"
+               ValueChanged="ImporterChanged"
+               Variant="Variant.Outlined"
+               Label="Импортировать из">
+        @foreach (var importer in Data.ShopImports)
+        {
+            <MudSelectItem Value="importer">@importer.Name</MudSelectItem>
+        }
+    </MudSelect>
+
+    <MudTextField Style="width: 100%" @bind-Value="_shopName" T="string" Variant="Variant.Outlined"
+                  Label="Название Магазина"></MudTextField>
+    <br/>
+    @if (_importer?.DefaultShopName == null)
+    {
+        @foreach (var shop in _shops)
+        {
+            <MudChip T="string" @onclick="() => _shopName = shop.Name" Color="Color.Primary">@shop.Name</MudChip>
+        }
+    }
+
+    <br/>
+    <br/>
+    <textarea class="textarea" @oninput="HandleOnChange"
+              placeholder="Текст для импорта"></textarea>
+    <br/>
+    <br/>
+    <MudButton @onclick="DoImport" Color="Color.Primary" Variant="Variant.Filled">Импортировать</MudButton>
+}
+else
+{
+    <MudText Class="mb-8">Для начала работы выберите Shard файл</MudText>
+}
+
+<style>
+    .textarea {
+        padding: 10px;
+        width: 100%;
+        height: 180px;
+        background: none;
+        color: var(--mud-palette-text-primary);
+    }
+</style>
+
+@code {
+    private IShopImporter? _importer;
+    private string? _shopName;
+    private string? _content;
+    private List<Shop> _shops = [];
+
+    private void HandleOnChange(ChangeEventArgs args)
+    {
+        _content = args.Value?.ToString();
+    }
+
+    void DoImport()
+    {
+        if (string.IsNullOrEmpty(_content) || _importer == null) return;
+
+        var shopName = _importer.DefaultShopName ?? _shopName ?? "...";
+        var shop = ShopService.GetShopByName(shopName) ?? ShopService.CreateShop(shopName, _importer.Name);
+
+        if (shop == null) return;
+
+        _importer.Import(_content, shop, ShopService.UpsertShopItem, ShopService.InsertOrder, ShopService.InsertOrderItem);
+    }
+
+    void ImporterChanged(IShopImporter importer)
+    {
+        _importer = importer;
+        _shopName = _importer.DefaultShopName;
+        _shops = ShopService.GetShopsByImporter(_importer.Name);
+    }
+
+    protected override void OnInitialized()
+    {
+        _importer = Data.ShopImports[0];
+        _shopName = _importer.DefaultShopName;
+        _shops = ShopService.GetShopsByImporter(_importer.Name);
+    }
+
+}

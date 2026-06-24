@@ -1,0 +1,30 @@
+﻿@page "/Shop"
+@using Shard.Data
+@inject GlobalData Data;
+@inject NavigationManager Manager;
+
+<PageTitle>Мои Заказы</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Мои Заказы<MudIconButton @onclick="GoImport" Icon="@Icons.Material.Filled.ImportExport"
+                                                                     aria-label="import"/>
+</MudText>
+@if (Data.ActiveShard != null)
+{
+    
+}
+else
+{
+    <MudText Class="mb-8">Для начала работы выберите Shard файл</MudText>
+}
+
+@code {
+    private void GoImport()
+    {
+        Manager.NavigateTo("Shop/Import");
+    }
+
+    protected override void OnInitialized()
+    {
+    }
+
+}

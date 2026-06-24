@@ -8,6 +8,8 @@ public class GlobalData(IConfiguration configuration)
         ? null
         : configuration.GetValue<string>("Storage") + $"\\Shards\\{ActiveShard}.db";
 
+    public List<IShopImporter> ShopImports = [new YandexShopImporter(), new LifemartShopImpoerter()];
+
     public List<string> GetShards()
     {
         var path = configuration.GetValue<string>("Storage") + "\\Shards";

@@ -14,6 +14,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<GlobalData>();
 builder.Services.AddTransient<FolderService>();
 builder.Services.AddTransient<FileService>();
+builder.Services.AddTransient<ShopService>();
 builder.Services.AddMudServices();
 
 var storage = builder.Configuration.GetValue<string>("Storage");
