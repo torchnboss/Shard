@@ -6,7 +6,7 @@ public class YandexShopImporter : IShopImporter
 
     public string? DefaultShopName => null;
 
-    private const string Numbers = "0123456789";
+    private const string Numbers = "0123456789.";
 
     private static decimal ParseNumber(string number)
         => decimal.Parse(string.Join("", number.Where(x => Numbers.Contains(x)).ToArray()));
