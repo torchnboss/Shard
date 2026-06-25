@@ -6,10 +6,10 @@ public class YandexShopImporter : IShopImporter
 
     public string? DefaultShopName => null;
 
-    private const string Numbers = "0123456789.";
+    private const string Numbers = "0123456789.,";
 
     private static decimal ParseNumber(string number)
-        => decimal.Parse(string.Join("", number.Where(x => Numbers.Contains(x)).ToArray()));
+        => decimal.Parse(string.Join("", number.Where(x => Numbers.Contains(x)).ToArray()).Replace(".", ","));
 
     public void Import(string content, Shop shop, Func<ShopItem, ShopItem?> addShopItem, Action<Order> addOrder,
         Action<OrderItem> addOrderItem)
