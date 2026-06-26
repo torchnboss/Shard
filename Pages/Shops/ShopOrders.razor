@@ -11,9 +11,19 @@
 </MudText>
 @if (Data.ActiveShard != null)
 {
+    @if (_shop != null)
+    {
+        <MudChip T="string" @onclick="() => _shop = null" Color="Color.Primary">Все магазины</MudChip>
+    }
+    @foreach (var shop in _shops)
+    {
+        <MudChip T="string" @onclick="() => { _shop = shop; OpenOrder(FilteredOrders.FirstOrDefault()); }" Color="@(_shop == shop ? Color.Secondary : Color.Primary)">@shop.Name</MudChip>
+    }
+    <br/>
+    <br/>
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem>
-            @foreach (var order in _orders)
+            @foreach (var order in FilteredOrders)
             {
                 <MudCard Class="@CardClass(order)">
                     <MudCardContent>
@@ -70,6 +80,7 @@ else
     private List<Shop> _shops = [];
     private List<Order> _orders = [];
     private Order? _order = null;
+    private Shop? _shop = null;
     private List<OrderItem> _orderItems = [];
 
     private string CardClass(Order order)
@@ -89,6 +100,10 @@ else
         {
             _orderItems = ShopService.GetOrderItems(order);
         }
+        else
+        {
+            _orderItems = [];
+        }
     }
 
     protected override void OnInitialized()
@@ -97,5 +112,15 @@ else
         _orders = ShopService.GetOrders();
         OpenOrder(_orders.FirstOrDefault());        
     }
+    
+    
+    
+    private IEnumerable<Order> FilteredOrders =>
+        _orders
+            .Where(x =>
+            {
+                if (_shop == null) return true;
+                return x.ShopId == _shop.Id;
+            });
 
 }
