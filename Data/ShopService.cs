@@ -80,6 +80,51 @@ public class ShopService(GlobalData data)
         return results;
     }
 
+    public List<Shop> GetShops()
+    {
+        if (data.ActivePath == null) return [];
+
+        using var db = new LiteDatabase(data.ActivePath);
+        var col = db.GetCollection<Shop>("shops");
+
+        col.EnsureIndex(x => x.Name);
+
+        var results = col.Query()
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        return results;
+    }
+
+    public List<Order> GetOrders()
+    {
+        if (data.ActivePath == null) return [];
+
+        using var db = new LiteDatabase(data.ActivePath);
+        var col = db.GetCollection<Order>("orders");
+
+        var results = col.Query()
+            .OrderByDescending(x => x.CreatedAt)
+            .ToList();
+
+        return results;
+    }
+
+    public List<OrderItem> GetOrderItems(Order order)
+    {
+        if (data.ActivePath == null) return [];
+
+        using var db = new LiteDatabase(data.ActivePath);
+        var col = db.GetCollection<OrderItem>("order_items");
+
+        var results = col.Query()
+            .Where(x => x.OrderId == order.Id)
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        return results;
+    }
+
     public Shop? CreateShop(string shopName, string shopImporterName)
     {
         if (data.ActivePath == null) return null;

@@ -2,6 +2,7 @@
 @using Shard.Data
 @inject GlobalData Data;
 @inject NavigationManager Manager;
+@inject ShopService ShopService;
 
 <PageTitle>Мои Заказы</PageTitle>
 
@@ -10,21 +11,91 @@
 </MudText>
 @if (Data.ActiveShard != null)
 {
-    
+    <MudGrid Spacing="2" Justify="Justify.Center">
+        <MudItem>
+            @foreach (var order in _orders)
+            {
+                <MudCard Class="@CardClass(order)">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5">@_shops.Single(x => x.Id == order.ShopId).Name <span class="order-card-price">@order.Price ₽</span></MudText>
+                        <MudText Typo="Typo.body2">@order.CreatedAt.ToLongDateString() @order.CreatedAt.ToShortTimeString()</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton @onclick="() => OpenOrder(order)" Variant="Variant.Text" Color="Color.Primary">Открыть</MudButton>
+                    </MudCardActions>
+                </MudCard>
+                <br/>
+            }
+        </MudItem>
+        <MudItem>
+            @foreach (var item in _orderItems)
+            {
+                <MudCard Class="order-item-card">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6">@item.Name <span class="order-card-price">@(item.Price * item.Quantity) ₽</span></MudText>
+                        <MudText Typo="Typo.body2">@item.Quantity шт <span class="order-card-price">@item.Price ₽ / шт</span></MudText>
+                    </MudCardContent>
+                </MudCard>
+                <br/>
+            }
+        </MudItem>
+    </MudGrid>
 }
 else
 {
     <MudText Class="mb-8">Для начала работы выберите Shard файл</MudText>
 }
 
+<style>
+    .order-card-price {
+        float:right
+    }
+    
+    .order-item-card {
+        width: 500px;        
+    }
+    
+    .order-card {
+        background: none;
+        width: 448px;
+    }
+    
+    .order-card.open {
+        background: var(--mud-palette-surface);
+    }
+    
+</style>
+
 @code {
+    private List<Shop> _shops = [];
+    private List<Order> _orders = [];
+    private Order? _order = null;
+    private List<OrderItem> _orderItems = [];
+
+    private string CardClass(Order order)
+    {
+        return "order-card" + (this._order == order ? " open" : "");
+    }
+    
     private void GoImport()
     {
         Manager.NavigateTo("Shop/Import");
     }
 
+    private void OpenOrder(Order? order)
+    {
+        _order = order;
+        if (order != null)
+        {
+            _orderItems = ShopService.GetOrderItems(order);
+        }
+    }
+
     protected override void OnInitialized()
     {
+        _shops = ShopService.GetShops();
+        _orders = ShopService.GetOrders();
+        OpenOrder(_orders.FirstOrDefault());        
     }
 
 }
