@@ -13,7 +13,7 @@
 {
     @if (_shop != null)
     {
-        <MudChip T="string" @onclick="() => _shop = null" Color="Color.Primary">Все магазины</MudChip>
+        <MudChip T="string" @onclick="() => { _shop = null; OpenOrder(FilteredOrders.FirstOrDefault()); }" Color="Color.Primary">Все магазины</MudChip>
     }
     @foreach (var shop in _shops)
     {
