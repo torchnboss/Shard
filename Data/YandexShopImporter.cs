@@ -21,8 +21,10 @@ public class YandexShopImporter : IShopImporter
         decimal? itemQuantity = null;
         decimal? itemPrice = null;
         decimal totalPrice = 0;
-        foreach (var line in lines)
+        foreach (var rawLine in lines)
         {
+            var line = rawLine.Trim();
+            
             if (itemName == null)
             {
                 itemName = line;
