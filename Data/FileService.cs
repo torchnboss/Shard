@@ -12,8 +12,9 @@ public class FileService(GlobalData data, IConfiguration configuration)
         var col = db.GetCollection<MediaFile>("files");
         var pics = col.Query().Where(x => x.Type == FolderType.Pictures).Count();
         var vids = col.Query().Where(x => x.Type == FolderType.Videos).Count();
+        var orders = db.GetCollection<Order>("orders").Query().Count();
 
-        return [new KeyValuePair<string, int>("Картинки", pics), new KeyValuePair<string, int>("Видосы", vids)];
+        return [new KeyValuePair<string, int>("Картинки", pics), new KeyValuePair<string, int>("Видосы", vids), new KeyValuePair<string, int>("Заказы", orders)];
     }
 
     public List<MediaFile> GetFiles(FolderType folderType)
